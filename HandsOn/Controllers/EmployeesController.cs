@@ -25,11 +25,11 @@ namespace HandsOn.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IEnumerable<EmployeeDto>> Get(int id)
         {
             var employee = await _unitOfWork.Employees.GetEmployeeWithAnnualSalary(id);
 
-            return Ok(employee);
+            return employee;
         }
 
     }

@@ -20,31 +20,38 @@ namespace HandsOn.Persistence.Repositories
             this.mapper = mapper;
         }
 
-        public async Task<EmployeeDto> GetEmployeeWithAnnualSalary(int id)
+        public async Task<IEnumerable<EmployeeDto>> GetEmployeeWithAnnualSalary(int id)
         {
             try
             {
                 IEnumerable<Employee> entities = await DataService<Employee>.GetData("api/Employees");
 
-                var employee = entities.Where(e => e.Id == id).SingleOrDefault();
+                var employee = entities.Where(e => e.Id == id);
 
-                var employeeDto = mapper.Map<Employee, EmployeeDto>(employee);
+                var employeesDto = new List<EmployeeDto>();
 
-                switch (employee.ContractTypeName)
+                foreach (var e in employee)
                 {
-                    case "HourlySalaryEmployee":
-                        {
-                            employeeDto.AnnualSalary = 120 * employeeDto.HourlySalary * 12;
-                        }
-                        break;
-                    case "MonthlySalaryEmployee":
-                        {
-                            employeeDto.AnnualSalary = employeeDto.MonthlySalary * 12;
-                        }
-                        break;
+                    var employeeDto = mapper.Map<Employee, EmployeeDto>(e);
+
+                    switch (employeeDto.ContractTypeName)
+                    {
+                        case "HourlySalaryEmployee":
+                            {
+                                employeeDto.AnnualSalary = 120 * employeeDto.HourlySalary * 12;
+                            }
+                            break;
+                        case "MonthlySalaryEmployee":
+                            {
+                                employeeDto.AnnualSalary = employeeDto.MonthlySalary * 12;
+                            }
+                            break;
+                    }
+
+                    employeesDto.Add(employeeDto);
                 }
 
-                return employeeDto;
+                return employeesDto;
             }
             catch (Exception)
             {

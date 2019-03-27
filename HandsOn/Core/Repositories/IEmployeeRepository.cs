@@ -6,7 +6,7 @@ namespace HandsOn.Core.Repositories
 {
     public interface IEmployeeRepository : IRepository<EmployeeDto>
     {
-        Task<EmployeeDto> GetEmployeeWithAnnualSalary(int id);
+        Task<IEnumerable<EmployeeDto>> GetEmployeeWithAnnualSalary(int id);
 
         Task<IEnumerable<EmployeeDto>> GetAllWithAnnualSalary();
     }
